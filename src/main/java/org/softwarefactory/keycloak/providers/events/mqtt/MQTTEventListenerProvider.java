@@ -107,7 +107,7 @@ public class MQTTEventListenerProvider implements EventListenerProvider {
                     options.setPassword(this.password.toCharArray());
                 }
                 client.connect(options);
-                // System.out.println("EVENT: " + stringEvent);
+                 System.out.println("EVENT: " + stringEvent);
                 MqttMessage payload = toPayload(stringEvent);
                 payload.setQos(0);
                 payload.setRetained(true);
@@ -132,31 +132,37 @@ public class MQTTEventListenerProvider implements EventListenerProvider {
     private String toString(Event event) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("{'type': '");
+        sb.append("{\"type\": \"");
         sb.append(event.getType());
-        sb.append("', 'realmId': '");
+        sb.append("\", \"realmId\": \"");
         sb.append(event.getRealmId());
-        sb.append("', 'clientId': '");
+        sb.append("\", \"clientId\": \"");
         sb.append(event.getClientId());
-        sb.append("', 'userId': '");
+        sb.append("\", \"userId\": \"");
         sb.append(event.getUserId());
-        sb.append("', 'ipAddress': '");
+        sb.append("\", \"ipAddress\": \"");
         sb.append(event.getIpAddress());
-        sb.append("'");
+        sb.append("\"");
 
         if (event.getError() != null) {
-            sb.append(", 'error': '");
+            sb.append(", \"error\": \"");
             sb.append(event.getError());
-            sb.append("'");
+            sb.append("\"");
         }
-        sb.append(", 'details': {");
+        sb.append(", \"details\": {");
         if (event.getDetails() != null) {
+            int i = 0;
             for (Map.Entry<String, String> e : event.getDetails().entrySet()) {
-                sb.append("'");
+                if (i != 0)
+                {
+                    sb.append(",");
+                }
+                i++;
+                sb.append("\"");
                 sb.append(e.getKey());
-                sb.append("': '");
+                sb.append("\": \"");
                 sb.append(e.getValue());
-                sb.append("', ");
+                sb.append("\"");
             }
         }
         sb.append("}}");
@@ -167,24 +173,24 @@ public class MQTTEventListenerProvider implements EventListenerProvider {
     private String toString(AdminEvent adminEvent) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("{'type': '");
+        sb.append("{\"type\": \"");
         sb.append(adminEvent.getOperationType());
-        sb.append("', 'realmId': '");
+        sb.append("\", \"realmId\": \"");
         sb.append(adminEvent.getAuthDetails().getRealmId());
-        sb.append("', 'clientId': '");
+        sb.append("\", \"clientId\": \"");
         sb.append(adminEvent.getAuthDetails().getClientId());
-        sb.append("', 'userId': '");
+        sb.append("\", \"userId\": \"");
         sb.append(adminEvent.getAuthDetails().getUserId());
-        sb.append("', 'ipAddress': '");
+        sb.append("\", \"ipAddress\": \"");
         sb.append(adminEvent.getAuthDetails().getIpAddress());
-        sb.append("', 'resourcePath': '");
+        sb.append("\", \"resourcePath\": \"");
         sb.append(adminEvent.getResourcePath());
-        sb.append("'");
+        sb.append("\"");
 
         if (adminEvent.getError() != null) {
-            sb.append(", 'error': '");
+            sb.append(", \"error\": \"");
             sb.append(adminEvent.getError());
-            sb.append("'");
+            sb.append("\"");
         }
         sb.append("}");
         return sb.toString();
